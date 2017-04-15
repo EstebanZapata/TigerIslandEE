@@ -173,7 +173,7 @@ public class TileRulesManager {
                 continue;
             }
         }
-        throw new TileNotAdjacentToAnotherException("Tile being placed is not adjacent to an existing game.tile");
+        throw new TileNotAdjacentToAnotherException("Tile being placed is not adjacent to an existing game.tile " + locationOfHexes[0] + locationOfHexes[1] + locationOfHexes[2]);
     }
 
     private boolean hexLocationIsEmpty(Location location) {

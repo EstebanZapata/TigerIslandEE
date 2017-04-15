@@ -32,4 +32,9 @@ public class Tile {
     }
 
     public Terrain getRightHexTerrain() { return hexes[RIGHT_HEX].getTerrain(); }
+
+    @Override
+    public String toString() {
+        return hexes[0].getLocation() + " " + hexes[1].getLocation() + " " + hexes[2].getLocation();
+    }
 }
