@@ -22,6 +22,8 @@ public class PlayerTest {
     public void setupPlayer() {
         this.world = new World();
         this.player = new Player(this.world);
+
+
     }
 
     @Test
@@ -564,4 +566,29 @@ public class PlayerTest {
         Assert.assertEquals(4, settlement.getSettlementSize());
 
     }
+
+    @Test
+    public void testAbleToCreateSettlementUsingShaman() throws Exception {
+        Hex rockHex = world.getHexByCoordinate(-1,-1,0);
+        Assert.assertEquals(null, rockHex.getSettlement());
+
+        Settlement shamanSettlement = player.foundSettlementUsingShaman(rockHex);
+        Assert.assertEquals(shamanSettlement, rockHex.getSettlement());
+        Assert.assertTrue(shamanSettlement.getHasShaman());
+    }
+
+    @Test
+    public void testCombiningTwoSettlementsWhereOneHasAShaman() throws Exception {
+        Hex rockHex = world.getHexByCoordinate(-1,-1,0);
+        Hex grassHex = world.getHexByCoordinate(0,-1,0);
+
+        Settlement normalSettlement = player.foundSettlement(rockHex);
+        Assert.assertFalse(normalSettlement.getHasShaman());
+
+        Settlement shamanSettlement = player.foundSettlementUsingShaman(grassHex);
+
+        Assert.assertTrue(normalSettlement.getHasShaman());
+
+    }
+
 }
