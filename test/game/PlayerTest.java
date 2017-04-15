@@ -537,4 +537,31 @@ public class PlayerTest {
         tigerPieceCount -= 1;
         Assert.assertEquals(tigerPieceCount, this.player.getTigerCount());
     }
+
+    @Test
+    public void testAbleToFoundSettlementOnPaddy() throws Exception {
+        Tile paddyTile = new Tile(Terrain.PADDY, Terrain.GRASSLANDS);
+
+        world.insertTileIntoTileManager(paddyTile, new Location(1,0,0), TileOrientation.EAST_NORTHEAST);
+
+        Settlement foundedSettlement = player.foundSettlement(paddyTile.getLeftHexRelativeToVolcano());
+
+        Assert.assertEquals(foundedSettlement, paddyTile.getLeftHexRelativeToVolcano().getSettlement());
+
+    }
+
+    @Test
+    public void testAbleToExpandOntoPaddy() throws Exception {
+        Tile paddyTile = new Tile(Terrain.PADDY, Terrain.GRASSLANDS);
+        Tile paddyTile2 = new Tile(Terrain.PADDY, Terrain.PADDY);
+
+        world.insertTileIntoTileManager(paddyTile, new Location(1,0,0), TileOrientation.EAST_NORTHEAST);
+        world.insertTileIntoTileManager(paddyTile2, new Location(2,-1,0), TileOrientation.WEST_SOUTHWEST);
+
+        Settlement settlement = player.foundSettlement(world.getHexByCoordinate(2,1,0));
+        player.expandSettlement(settlement, Terrain.PADDY);
+
+        Assert.assertEquals(4, settlement.getSettlementSize());
+
+    }
 }
