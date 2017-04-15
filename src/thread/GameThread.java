@@ -12,9 +12,7 @@ import game.tile.orientation.TileOrientation;
 import game.world.CoordinateSystemHelper;
 import game.world.World;
 import game.world.rules.exceptions.IllegalTilePlacementException;
-import thread.message.GameActionMessage;
-import thread.message.GameCommandMessage;
-import thread.message.Message;
+import thread.message.*;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -79,6 +77,15 @@ public class GameThread extends MyThread {
             } catch (IllegalTilePlacementException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (message instanceof GameOverMessage) {
+            int playerOneScore = game.theAI.getScore();
+            int playerTwoScore = game.opponent.getScore();
+
+            response = new PlayerScoreMessage(gameId, myPlayerId, playerOneScore, opponentPlayerId, playerTwoScore);
+
+            gameResponseQueue.add(response);
         }
 
 

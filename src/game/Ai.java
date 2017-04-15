@@ -4,6 +4,7 @@
 
 package game;
 
+import game.player.Player;
 import game.tile.Hex;
 import game.tile.Location;
 import game.tile.Tile;
@@ -17,8 +18,10 @@ import static game.tile.orientation.TileOrientation.NORTHWEST_WEST;
 
 public class Ai {
     public World world;
-    public Ai(World world){
+    private Player theAI;
+    public Ai(World world, Player theAI){
         this.world = world;
+        this.theAI = theAI;
     }
 
     public GameActionMessage chooseMove(String gameID, int moveNumber, String playerID, Tile tileToBePlaced) throws IllegalTilePlacementException {
@@ -31,6 +34,12 @@ public class Ai {
         int buildYCoordinate = newTileYCoordinate;
         Location locationOnWhichToBuild = new Location(buildXCoordinate, buildYCoordinate, 0);
         world.insertTileIntoTileManager(tileToBePlaced,locationOfNewTile,NORTHWEST_WEST);
+        try {
+            theAI.foundSettlement(world.getHexByLocation(locationOnWhichToBuild));
+        }
+        catch (Exception e) {
+
+        }
         return new GameActionMessage(gameID, moveNumber, playerID, tileToBePlaced, locationOfNewTile, NORTHWEST_WEST, FOUNDED_SETTLEMENT, locationOnWhichToBuild, GRASSLANDS);
 
     }
