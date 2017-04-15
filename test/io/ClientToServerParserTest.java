@@ -42,4 +42,31 @@ public class ClientToServerParserTest {
 
         Assert.assertEquals("GAME 1 MOVE 4 PLACE ROCK+GRASS AT 1 1 -2 6 BUILD TIGER PLAYGROUND AT -2 3 -1", serverString);
     }
+
+    @Test
+    public void testGameActionWithNewTerrainToServerString() {
+        GameActionMessage gameActionMessage =
+                new GameActionMessage("5", 2, "spagett", new Tile(Terrain.PADDY, Terrain.ROCKY),
+                        new Location(2,1,0), TileOrientation.NORTHEAST_NORTHWEST, BuildAction.FOUNDED_SETTLEMENT,
+                        new Location(3,4,0), null);
+
+        String serverString = ClientToServerParser.getStringFromGameActionMessage(gameActionMessage);
+
+        Assert.assertEquals("GAME 5 MOVE 2 PLACE ROCK+PADDY AT 2 -1 -1 1 FOUND SETTLEMENT AT 3 1 -4", serverString);
+    }
+
+    @Test
+    public void testGameActionWithNewTerrainAndExpansionToNewTerrainReturnsServerString() {
+        GameActionMessage gameActionMessage =
+                new GameActionMessage("5", 2, "spagett", new Tile(Terrain.PADDY, Terrain.ROCKY),
+                        new Location(2,1,0), TileOrientation.NORTHEAST_NORTHWEST, BuildAction.EXPANDED_SETTLEMENT,
+                        new Location(3,4,0), Terrain.PADDY);
+
+        String serverString = ClientToServerParser.getStringFromGameActionMessage(gameActionMessage);
+
+        Assert.assertEquals("GAME 5 MOVE 2 PLACE ROCK+PADDY AT 2 -1 -1 1 EXPAND SETTLEMENT AT 3 1 -4 PADDY", serverString);
+
+
+    }
+
 }
