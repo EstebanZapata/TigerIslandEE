@@ -12,6 +12,7 @@ public class Player {
     private int villagerCount;
     private int totoroCount;
     private int tigerCount;
+    private int shamanCount;
 
     public SettlementManager settlementManager;
 
@@ -20,6 +21,7 @@ public class Player {
         this.villagerCount = Settings.STARTING_VILLAGER_COUNT;
         this.totoroCount = Settings.STARTING_TOTORO_COUNT;
         this.tigerCount = Settings.STARTING_TIGER_COUNT;
+        this.shamanCount = Settings.STARTING_SHAMAN_COUNT;
         this.settlementManager = new SettlementManager(existingWorld);
     }
 
@@ -80,6 +82,21 @@ public class Player {
             this.villagerCount += 1;
             throw new SettlementAlreadyExistsOnHexException(e.getMessage());
         }
+    }
+
+    public Settlement foundSettlementUsingShaman(Hex foundingHex) throws OutOfShamansException, SettlementAlreadyExistsOnHexException {
+        if (this.shamanCount == 0) {
+            throw new OutOfShamansException("Player has no more shamans");
+        }
+
+        Settlement newSettlement = this.settlementManager.foundSettlement(foundingHex);
+        newSettlement.setHasShaman(true);
+        newSettlement.setShamanLocation(foundingHex.getLocation());
+
+        this.shamanCount--;
+        this.score += Settings.FOUND_SETTLEMENT_POINTS;
+        return newSettlement;
+
     }
 
     public void expandSettlement(Settlement existingSettlement, Terrain terrainToExpandOnto) throws
