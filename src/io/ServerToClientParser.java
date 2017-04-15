@@ -167,6 +167,8 @@ public class ServerToClientParser {
             return LAKE;
         if(type.contains("GRASS"))
             return GRASSLANDS;
+        if (type.contains("PADDY"))
+            return PADDY;
         else
             return ROCKY;
 
