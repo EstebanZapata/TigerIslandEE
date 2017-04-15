@@ -11,9 +11,11 @@ public class Settlement {
     private ArrayList<Hex> settlementHexes;
     private boolean hasTotoro = false;
     private boolean hasTiger = false;
+    private boolean hasShaman = false;
     private LinkedList<Hex> expansionQueue;
     private Location totoroLocation = null;
     private Location tigerLocation = null;
+    private Location shamanLocation = null;
 
     public Settlement(Hex foundingHex) throws SettlementAlreadyExistsOnHexException {
         settlementHexes = new ArrayList<Hex>();
@@ -70,6 +72,22 @@ public class Settlement {
 
     public void setHasTigerPlayground() {
         hasTiger = true;
+    }
+
+    public void setHasShaman(boolean hasShaman) {
+        this.hasShaman = hasShaman;
+    }
+
+    public boolean getHasShaman() {
+        return this.hasShaman;
+    }
+
+    public void setShamanLocation(Location location) {
+        this.shamanLocation = location;
+    }
+
+    public Location getShamanLocation() {
+        return this.shamanLocation;
     }
 
     public Boolean hasTotoroSanctuary() {
@@ -200,5 +218,7 @@ public class Settlement {
         }
         return setWithoutDuplicates.toArray(new Location[0]);
     }
+
+
 
 }

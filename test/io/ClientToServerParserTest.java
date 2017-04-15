@@ -69,4 +69,16 @@ public class ClientToServerParserTest {
 
     }
 
+    @Test
+    public void testGameActionShangrilaToServerString() {
+        GameActionMessage gameActionMessage =
+                new GameActionMessage("5", 2, "spagett", new Tile(Terrain.PADDY, Terrain.ROCKY),
+                        new Location(2,1,0), TileOrientation.NORTHEAST_NORTHWEST, BuildAction.SHANGRILA,
+                        new Location(3,4,0), Terrain.PADDY);
+
+        String serverString = ClientToServerParser.getStringFromGameActionMessage(gameActionMessage);
+
+        Assert.assertEquals("GAME 5 MOVE 2 PLACE ROCK+PADDY AT 2 -1 -1 1 FOUND SHANGRILA AT 3 1 -4", serverString);
+    }
+
 }

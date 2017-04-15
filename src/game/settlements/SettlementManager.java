@@ -74,6 +74,18 @@ public class SettlementManager {
         return numVillagers;
     }
 
+    public int getExpansionScore(Settlement existingSettlement, Terrain terrain) throws Exception {
+        ArrayList<Hex> hexesToExpandTo = existingSettlement.getHexesToExpandTo(world, terrain);
+        int score = 0;
+
+        for (Hex hex:hexesToExpandTo) {
+            score += (hex.getHeight() + 1)*(hex.getHeight() + 1);
+        }
+
+        return score;
+
+    }
+
     public void expandSettlement(Settlement existingSettlement, Terrain terrainType) throws
             NoHexesToExpandToException,
             SettlementCannotBeBuiltOnVolcanoException

@@ -12,6 +12,7 @@ public class Player {
     private int villagerCount;
     private int totoroCount;
     private int tigerCount;
+    private int shamanCount;
 
     public SettlementManager settlementManager;
 
@@ -20,6 +21,7 @@ public class Player {
         this.villagerCount = Settings.STARTING_VILLAGER_COUNT;
         this.totoroCount = Settings.STARTING_TOTORO_COUNT;
         this.tigerCount = Settings.STARTING_TIGER_COUNT;
+        this.shamanCount = Settings.STARTING_SHAMAN_COUNT;
         this.settlementManager = new SettlementManager(existingWorld);
     }
 
@@ -82,15 +84,40 @@ public class Player {
         }
     }
 
-    public void expandSettlement(Settlement existingSettlement, Terrain terrainToExpandOnto) throws
-            SettlementCannotBeBuiltOnVolcanoException,
-            NotEnoughPiecesException,
-            NoHexesToExpandToException
+    public Settlement foundSettlementUsingShaman(Hex foundingHex) throws
+            OutOfShamansException, SettlementAlreadyExistsOnHexException, CannotBuildShamanOnHigherLevel{
+        if (this.shamanCount == 0) {
+            throw new OutOfShamansException("Player has no more shamans");
+        }
+
+        if (foundingHex.getHeight() != 0) {
+            throw new CannotBuildShamanOnHigherLevel("Cannot build shaman on higher level " + foundingHex.getLocation());
+        }
+
+        Settlement newSettlement = this.settlementManager.foundSettlement(foundingHex);
+        newSettlement.setHasShaman(true);
+        newSettlement.setShamanLocation(foundingHex.getLocation());
+
+        this.shamanCount--;
+        this.score += Settings.FOUND_SETTLEMENT_POINTS;
+        return newSettlement;
+
+    }
+
+    public void expandSettlement(Settlement existingSettlement, Terrain terrainToExpandOnto) throws Exception
     {
         int numberOfVillagersRequiredToExpand = this.settlementManager.getNumberOfVillagersRequiredToExpand(existingSettlement, terrainToExpandOnto);
         try {
+            int potentialScore = settlementManager.getExpansionScore(existingSettlement, terrainToExpandOnto);
             this.useVillagers(numberOfVillagersRequiredToExpand);
             this.settlementManager.expandSettlement(existingSettlement, terrainToExpandOnto);
+
+
+            if (existingSettlement.getHasShaman()) {
+                potentialScore *= 2;
+            }
+
+            this.score += potentialScore;
         }
         catch (NoHexesToExpandToException e) {
             this.villagerCount += numberOfVillagersRequiredToExpand;

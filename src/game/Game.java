@@ -32,9 +32,7 @@ public class Game {
     }
 
     public void expandSettlement(Player currentlyActivePlayer, Settlement existingSettlement, Terrain terrainBeingExpandedOnto) throws
-            SettlementCannotBeBuiltOnVolcanoException,
-            NotEnoughPiecesException,
-            NoHexesToExpandToException
+            Exception
     {
         currentlyActivePlayer.expandSettlement(existingSettlement, terrainBeingExpandedOnto);
     }
@@ -51,5 +49,9 @@ public class Game {
             BuildConditionsNotMetException
     {
         currentlyActivePlayer.buildTigerPlayground(playgroundHex);
+    }
+
+    public void buildShangrila(Player currentActivePlayer, Hex shangrilaHex) throws Exception {
+        currentActivePlayer.foundSettlementUsingShaman(shangrilaHex);
     }
 }

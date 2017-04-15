@@ -117,7 +117,16 @@ public class ServerToClientParser {
         Terrain terrainToExpandOnto = null;
 
         if (parts[13].contains("FOUND")) {
-            buildAction = BuildAction.FOUNDED_SETTLEMENT;
+            if (parts[14].contains("SETTLEMENT")) {
+                buildAction = BuildAction.FOUNDED_SETTLEMENT;
+
+                serverBuildX = parts[16];
+                serverBuildY = parts[17];
+                serverBuildZ = parts[18];
+            }
+            else {
+                buildAction = BuildAction.SHANGRILA;
+            }
 
             serverBuildX = parts[16];
             serverBuildY = parts[17];
