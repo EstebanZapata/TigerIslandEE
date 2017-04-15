@@ -11,6 +11,7 @@ public class TerrainTest {
         Assert.assertEquals(true, Terrain.LAKE.isHabitable());
         Assert.assertEquals(true, Terrain.GRASSLANDS.isHabitable());
         Assert.assertEquals(true, Terrain.ROCKY.isHabitable());
+        Assert.assertEquals(true, Terrain.PADDY.isHabitable());
     }
 
     @Test

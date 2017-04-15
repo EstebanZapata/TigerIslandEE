@@ -456,4 +456,39 @@ public class SettlementManagerTest {
         Assert.assertEquals(newSettlement3, newSettlement4);
     }
 
+    @Test
+    public void ableToBuildTotoroOnPaddyTerrain() throws Exception {
+        Tile paddyTile = new Tile(Terrain.PADDY, Terrain.ROCKY);
+
+        world.insertTileIntoTileManager(paddyTile, new Location(1,0,0), TileOrientation.EAST_NORTHEAST);
+
+        Hex paddyHex = paddyTile.getLeftHexRelativeToVolcano();
+        Assert.assertEquals(Terrain.PADDY, paddyHex.getTerrain());
+
+        boolean checkSanctuaryConditionsDoesNotThrowException = false;
+        paddyHex.checkSanctuaryConditions();
+        checkSanctuaryConditionsDoesNotThrowException = true;
+
+        Assert.assertTrue(checkSanctuaryConditionsDoesNotThrowException);
+
+    }
+
+    @Test
+    public void ableToBuildTigerOnPaddyTerrain() throws Exception {
+        Tile paddyTile = new Tile(Terrain.PADDY, Terrain.ROCKY);
+
+        world.insertTileIntoTileManager(paddyTile, new Location(1,0,0), TileOrientation.EAST_NORTHEAST);
+
+        Hex paddyHex = paddyTile.getLeftHexRelativeToVolcano();
+        paddyHex.setLocation(new Location(0,0,2));
+        Assert.assertEquals(Terrain.PADDY, paddyHex.getTerrain());
+
+        boolean checkSanctuaryConditionsDoesNotThrowException = false;
+        paddyHex.checkPlaygroundConditions();
+        checkSanctuaryConditionsDoesNotThrowException = true;
+
+        Assert.assertTrue(checkSanctuaryConditionsDoesNotThrowException);
+
+    }
+
 }

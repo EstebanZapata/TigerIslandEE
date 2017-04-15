@@ -286,6 +286,18 @@ public class WorldTest {
         world.calculateTileOrientationToCoverVolcanoLocationAndAdjacentLocation(locationOfVolcanoToCover, locationOfAdjacent);
     }
 
+    @Test
+    public void testPlacingNewPaddyTerrain() throws IllegalTilePlacementException {
+        Tile paddyTile = new Tile(Terrain.PADDY, Terrain.ROCKY);
+
+        Location locationOfVolcano = new Location(1,2,0);
+
+        world.insertTileIntoTileManager(paddyTile, locationOfVolcano, TileOrientation.NORTHEAST_NORTHWEST);
+
+        Assert.assertEquals(Terrain.PADDY, world.getHexByCoordinate(2,3,0).getTerrain());
+        Assert.assertEquals(Terrain.ROCKY, world.getHexByCoordinate(1,3,0).getTerrain());
+    }
+
 
 
 }

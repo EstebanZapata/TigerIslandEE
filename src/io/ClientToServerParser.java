@@ -64,7 +64,7 @@ public class ClientToServerParser {
         buildActionString += convertClientCoordinatesToServerCoordinates(locationOfBuildAction);
 
         if (buildActionString.contains("EXPAND")) {
-            buildActionString += terrainToString(terrainExpandedTo);
+            buildActionString += ' ' + terrainToString(terrainExpandedTo);
         }
 
         return buildActionString;
@@ -90,6 +90,8 @@ public class ClientToServerParser {
                 return "ROCK";
             case JUNGLE:
                 return "JUNGLE";
+            case PADDY:
+                return "PADDY";
         }
 
         return null;

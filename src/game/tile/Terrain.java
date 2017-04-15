@@ -5,6 +5,7 @@ public enum Terrain {
     LAKE(true),
     GRASSLANDS(true),
     ROCKY(true),
+    PADDY(true),
 
     VOLCANO(false);
 

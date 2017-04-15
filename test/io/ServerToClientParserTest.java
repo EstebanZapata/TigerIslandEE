@@ -91,6 +91,70 @@ public class ServerToClientParserTest {
     }
 
     @Test
+    public void testMakeYourMoveWithNewTerrainReturnsCommandMessage() {
+        String serverCommand = "MAKE YOUR MOVE IN GAME 2 WITHIN 1.5 SECONDS: MOVE 5 PLACE GRASS+PADDY";
+
+        GameCommandMessage gameCommandMessage = (GameCommandMessage) ServerToClientParser.parseServerInputAndComposeMessage(serverCommand);
+
+        Assert.assertEquals("2", gameCommandMessage.getGameId());
+
+        double delta = gameCommandMessage.getMoveTime() - 1.5;
+        Assert.assertTrue(Math.abs(delta) < 0.01);
+        Assert.assertEquals(5, gameCommandMessage.getMoveNumber());
+
+        Assert.assertEquals(Terrain.PADDY, gameCommandMessage.getTileToPlace().getLeftHexTerrain());
+        Assert.assertEquals(Terrain.GRASSLANDS, gameCommandMessage.getTileToPlace().getRightHexTerrain());
+    }
+
+    @Test
+    public void testOpponentMoveWithNewTerrainReturnsActionMessage() {
+        String serverCommand = "GAME 5 MOVE 3 PLAYER spagett PLACED PADDY+ROCK AT -2 1 1 3 FOUNDED SETTLEMENT AT -2 0 2";
+
+        GameActionMessage gameActionMessage = (GameActionMessage) ServerToClientParser.parseServerInputAndComposeMessage(serverCommand);
+
+        Assert.assertEquals("5", gameActionMessage.getGameId());
+        Assert.assertEquals(3, gameActionMessage.getMoveNumber());
+        Assert.assertEquals("spagett", gameActionMessage.getPlayerId());
+
+        Assert.assertEquals(Terrain.ROCKY, gameActionMessage.getTilePlaced().getLeftHexTerrain());
+        Assert.assertEquals(Terrain.PADDY, gameActionMessage.getTilePlaced().getRightHexTerrain());
+
+        Assert.assertEquals(new Location(-2,-1,0), gameActionMessage.getLocationOfVolcano());
+
+        Assert.assertEquals(TileOrientation.SOUTHEAST_EAST, gameActionMessage.getTileOrientationPlaced());
+
+        Assert.assertEquals(BuildAction.FOUNDED_SETTLEMENT, gameActionMessage.getBuildActionPerformed());
+
+        Assert.assertEquals(new Location(-2,-2,0), gameActionMessage.getLocationOfBuildAction());
+
+        Assert.assertEquals(null, gameActionMessage.getTerrainExpandedOnto());
+    }
+
+    @Test
+    public void testOpponentMoveWithNewTerrainAndExpansionToNewTerrainReturnsActionMessage() {
+        String serverCommand = "GAME 5 MOVE 3 PLAYER spagett PLACED PADDY+ROCK AT -2 1 1 3 EXPANDED SETTLEMENT AT -2 0 2 PADDY";
+
+        GameActionMessage gameActionMessage = (GameActionMessage) ServerToClientParser.parseServerInputAndComposeMessage(serverCommand);
+
+        Assert.assertEquals("5", gameActionMessage.getGameId());
+        Assert.assertEquals(3, gameActionMessage.getMoveNumber());
+        Assert.assertEquals("spagett", gameActionMessage.getPlayerId());
+
+        Assert.assertEquals(Terrain.ROCKY, gameActionMessage.getTilePlaced().getLeftHexTerrain());
+        Assert.assertEquals(Terrain.PADDY, gameActionMessage.getTilePlaced().getRightHexTerrain());
+
+        Assert.assertEquals(new Location(-2,-1,0), gameActionMessage.getLocationOfVolcano());
+
+        Assert.assertEquals(TileOrientation.SOUTHEAST_EAST, gameActionMessage.getTileOrientationPlaced());
+
+        Assert.assertEquals(BuildAction.EXPANDED_SETTLEMENT, gameActionMessage.getBuildActionPerformed());
+
+        Assert.assertEquals(new Location(-2,-2,0), gameActionMessage.getLocationOfBuildAction());
+
+        Assert.assertEquals(Terrain.PADDY, gameActionMessage.getTerrainExpandedOnto());
+    }
+
+    @Test
     public void testServerCoordinateToClientFromOrigin() {
         Location parsedLocation = ServerToClientParser.convertServerCoordinatesToClientLocation("0", "0", "0");
 
