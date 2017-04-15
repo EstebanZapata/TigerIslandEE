@@ -1,6 +1,8 @@
 package game;
 
+import game.player.exceptions.CannotBuildShamanOnHigherLevel;
 import game.player.exceptions.NotEnoughPiecesException;
+import game.player.exceptions.OutOfShamansException;
 import game.settlements.Settlement;
 import game.settlements.exceptions.BuildConditionsNotMetException;
 import game.settlements.exceptions.NoHexesToExpandToException;
@@ -318,11 +320,7 @@ public class PlayerTest {
     }
 
     @Test
-    public void testExpandSettlement() throws
-            IllegalTilePlacementException,
-            BuildConditionsNotMetException,
-            NoHexesToExpandToException,
-            NotEnoughPiecesException
+    public void testExpandSettlement() throws Exception
     {
         Tile tile1 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
         Tile tile2 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
@@ -382,11 +380,7 @@ public class PlayerTest {
     }
 
     @Test (expected = NotEnoughPiecesException.class)
-    public void testExpandSettlementThrowsNotEnoughPiecesException() throws
-            IllegalTilePlacementException,
-            BuildConditionsNotMetException,
-            NoHexesToExpandToException,
-            NotEnoughPiecesException
+    public void testExpandSettlementThrowsNotEnoughPiecesException() throws Exception
     {
         Tile tile1 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
         Tile tile2 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
@@ -444,11 +438,7 @@ public class PlayerTest {
     }
 
     @Test
-    public void testBuildTotoroSanctuary() throws
-            IllegalTilePlacementException,
-            NotEnoughPiecesException,
-            BuildConditionsNotMetException,
-            NoHexesToExpandToException
+    public void testBuildTotoroSanctuary() throws Exception
     {
         Tile expansionTile1 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
         Tile expansionTile2 = new Tile(Terrain.JUNGLE, Terrain.GRASSLANDS);
@@ -591,4 +581,91 @@ public class PlayerTest {
 
     }
 
+    @Test
+    public void testExpandingASettlementWithNoShamanPoints() throws Exception {
+        Tile tileOne = new Tile(Terrain.ROCKY, Terrain.GRASSLANDS);
+        Tile tileTwo = new Tile(Terrain.LAKE, Terrain.JUNGLE);
+        Tile tileThree = new Tile(Terrain.GRASSLANDS,Terrain.GRASSLANDS);
+
+        world.insertTileIntoTileManager(tileOne, new Location(2,-1,0), TileOrientation.WEST_SOUTHWEST);
+        world.insertTileIntoTileManager(tileTwo, new Location(2,0,0), TileOrientation.NORTHWEST_WEST);
+        world.insertTileIntoTileManager(tileThree, new Location(2,0,1), TileOrientation.WEST_SOUTHWEST);
+
+        Assert.assertEquals(0, player.getScore());
+
+        Settlement settlementWithoutShaman = player.foundSettlement(world.getHexByCoordinate(0,-1,0));
+        Assert.assertEquals(1, player.getScore());
+
+        player.expandSettlement(settlementWithoutShaman, Terrain.GRASSLANDS);
+        Assert.assertEquals(1+9, player.getScore());
+    }
+
+    @Test
+    public void testExpandingASettlementWithShamanPoints() throws Exception {
+        Tile tileOne = new Tile(Terrain.ROCKY, Terrain.GRASSLANDS);
+        Tile tileTwo = new Tile(Terrain.LAKE, Terrain.JUNGLE);
+        Tile tileThree = new Tile(Terrain.GRASSLANDS,Terrain.GRASSLANDS);
+
+        world.insertTileIntoTileManager(tileOne, new Location(2,-1,0), TileOrientation.WEST_SOUTHWEST);
+        world.insertTileIntoTileManager(tileTwo, new Location(2,0,0), TileOrientation.NORTHWEST_WEST);
+        world.insertTileIntoTileManager(tileThree, new Location(2,0,1), TileOrientation.WEST_SOUTHWEST);
+
+        Assert.assertEquals(0, player.getScore());
+
+        Settlement settlementWithShaman = player.foundSettlementUsingShaman(world.getHexByCoordinate(0,-1,0));
+        Assert.assertEquals(1, player.getScore());
+
+        player.expandSettlement(settlementWithShaman, Terrain.GRASSLANDS);
+        Assert.assertEquals(1+9*2, player.getScore());
+    }
+
+    @Test(expected = OutOfShamansException.class)
+    public void testCannotBuildMoreThanOneShaman() throws Exception {
+        player.foundSettlementUsingShaman(world.getHexByCoordinate(1,1,0));
+        player.foundSettlementUsingShaman(world.getHexByCoordinate(0,-1,0));
+    }
+
+    @Test(expected = CannotBuildShamanOnHigherLevel.class)
+    public void testCannotBuildShamanOnHigherLevel() throws Exception {
+        Tile tileOne = new Tile(Terrain.ROCKY, Terrain.GRASSLANDS);
+        Tile tileTwo = new Tile(Terrain.LAKE, Terrain.JUNGLE);
+        Tile tileThree = new Tile(Terrain.GRASSLANDS,Terrain.GRASSLANDS);
+
+        world.insertTileIntoTileManager(tileOne, new Location(2,-1,0), TileOrientation.WEST_SOUTHWEST);
+        world.insertTileIntoTileManager(tileTwo, new Location(2,0,0), TileOrientation.NORTHWEST_WEST);
+        world.insertTileIntoTileManager(tileThree, new Location(2,0,1), TileOrientation.WEST_SOUTHWEST);
+
+        player.foundSettlementUsingShaman(tileThree.getLeftHexRelativeToVolcano());
+    }
+
+    @Test
+    public void testNukingShamanStopsPointDoubling() throws Exception {
+        Tile tileOne = new Tile(Terrain.ROCKY, Terrain.GRASSLANDS);
+        Tile tileTwo = new Tile(Terrain.LAKE, Terrain.JUNGLE);
+        Tile grassTile = new Tile(Terrain.GRASSLANDS, Terrain.GRASSLANDS);
+
+        world.insertTileIntoTileManager(tileOne, new Location(2,-1,0), TileOrientation.WEST_SOUTHWEST);
+        world.insertTileIntoTileManager(tileTwo, new Location(2,0,0), TileOrientation.NORTHWEST_WEST);
+        world.insertTileIntoTileManager(grassTile, new Location(2,0,1), TileOrientation.WEST_SOUTHWEST);
+
+
+        Settlement settlement = player.foundSettlementUsingShaman(world.getHexByCoordinate(0,1,0));
+        Assert.assertTrue(settlement.getHasShaman());
+        Assert.assertEquals(1, player.getScore());
+
+        player.expandSettlement(settlement, Terrain.LAKE);
+        Assert.assertEquals(1 + 2*2, player.getScore());
+
+        Tile tileThree = new Tile(Terrain.JUNGLE, Terrain.JUNGLE);
+        world.insertTileIntoTileManager(tileThree, new Location(-2,0,0), TileOrientation.EAST_NORTHEAST);
+
+        Tile tileNuke = new Tile(Terrain.JUNGLE, Terrain.JUNGLE);
+        world.insertTileIntoTileManager(tileNuke, new Location(0,0,1), TileOrientation.NORTHWEST_WEST);
+
+        Assert.assertFalse(settlement.getHasShaman());
+
+        player.expandSettlement(settlement, Terrain.GRASSLANDS);
+        Assert.assertEquals(5 + 10, player.getScore());
+
+    }
 }

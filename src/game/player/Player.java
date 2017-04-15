@@ -84,9 +84,14 @@ public class Player {
         }
     }
 
-    public Settlement foundSettlementUsingShaman(Hex foundingHex) throws OutOfShamansException, SettlementAlreadyExistsOnHexException {
+    public Settlement foundSettlementUsingShaman(Hex foundingHex) throws
+            OutOfShamansException, SettlementAlreadyExistsOnHexException, CannotBuildShamanOnHigherLevel{
         if (this.shamanCount == 0) {
             throw new OutOfShamansException("Player has no more shamans");
+        }
+
+        if (foundingHex.getHeight() != 0) {
+            throw new CannotBuildShamanOnHigherLevel("Cannot build shaman on higher level " + foundingHex.getLocation());
         }
 
         Settlement newSettlement = this.settlementManager.foundSettlement(foundingHex);
@@ -99,15 +104,20 @@ public class Player {
 
     }
 
-    public void expandSettlement(Settlement existingSettlement, Terrain terrainToExpandOnto) throws
-            SettlementCannotBeBuiltOnVolcanoException,
-            NotEnoughPiecesException,
-            NoHexesToExpandToException
+    public void expandSettlement(Settlement existingSettlement, Terrain terrainToExpandOnto) throws Exception
     {
         int numberOfVillagersRequiredToExpand = this.settlementManager.getNumberOfVillagersRequiredToExpand(existingSettlement, terrainToExpandOnto);
         try {
+            int potentialScore = settlementManager.getExpansionScore(existingSettlement, terrainToExpandOnto);
             this.useVillagers(numberOfVillagersRequiredToExpand);
             this.settlementManager.expandSettlement(existingSettlement, terrainToExpandOnto);
+
+
+            if (existingSettlement.getHasShaman()) {
+                potentialScore *= 2;
+            }
+
+            this.score += potentialScore;
         }
         catch (NoHexesToExpandToException e) {
             this.villagerCount += numberOfVillagersRequiredToExpand;

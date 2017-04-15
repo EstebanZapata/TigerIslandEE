@@ -1,5 +1,6 @@
 package game.world;
 
+import game.settlements.Settlement;
 import game.world.rules.TileRulesManager;
 import game.world.rules.exceptions.*;
 import game.tile.*;
@@ -33,9 +34,32 @@ public class World {
         boolean ableToPlaceTile = tileRulesManager.ableToPlaceTileAtLocation(tile, locationOfTileHexes);
 
         if(ableToPlaceTile) {
+            removeShamans(locationOfTileHexes);
             tileManager.insertTileIntoCoordinateSystemAndAddHexesToList(tile, locationOfTileHexes);
         }
 
+    }
+
+    private void removeShamans(Location[] locationOfTileHexes) throws NoHexAtLocationException {
+        if (locationOfTileHexes[0].getHeight() != 0) {
+            for (Location location : locationOfTileHexes) {
+                int x = location.getxCoordinate();
+                int y = location.getyCoordinate();
+                int zToCheck = location.getHeight() - 1;
+
+                Location locationToCheck = new Location(x,y,zToCheck);
+
+                Settlement settlement = getHexByLocation(locationToCheck).getSettlement();
+                if (settlement != null) {
+                    Location locationOfShaman = settlement.getShamanLocation();
+                    if (locationOfShaman.equals(locationToCheck)) {
+                        settlement.setShamanLocation(null);
+                        settlement.setHasShaman(false);
+                    }
+                }
+
+            }
+        }
     }
 
     public void placeFirstTile() throws IllegalTilePlacementException {

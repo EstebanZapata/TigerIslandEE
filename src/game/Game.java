@@ -32,9 +32,7 @@ public class Game {
     }
 
     public void expandSettlement(Player currentlyActivePlayer, Settlement existingSettlement, Terrain terrainBeingExpandedOnto) throws
-            SettlementCannotBeBuiltOnVolcanoException,
-            NotEnoughPiecesException,
-            NoHexesToExpandToException
+            Exception
     {
         currentlyActivePlayer.expandSettlement(existingSettlement, terrainBeingExpandedOnto);
     }
