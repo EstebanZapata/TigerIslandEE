@@ -379,4 +379,13 @@ public class ServerToClientParserTest {
 
         Assert.assertTrue(messageParsed instanceof DisconnectMessage);
     }
+
+    @Test
+    public void testGameOverSendOutcomeReturnsGameOverMessage() {
+        String message = "GAME 69 OVER SEND OUTCOME";
+
+        Message messageParsed = ServerToClientParser.parseServerInputAndComposeMessage(message);
+
+        Assert.assertEquals("69", ((GameOverMessage) messageParsed).getGameId());
+    }
 }

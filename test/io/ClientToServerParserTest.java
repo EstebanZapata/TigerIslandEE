@@ -8,6 +8,7 @@ import game.tile.orientation.TileOrientation;
 import org.junit.Assert;
 import org.junit.Test;
 import thread.message.GameActionMessage;
+import thread.message.PlayerScoreMessage;
 
 public class ClientToServerParserTest {
     @Test
@@ -79,6 +80,15 @@ public class ClientToServerParserTest {
         String serverString = ClientToServerParser.getStringFromGameActionMessage(gameActionMessage);
 
         Assert.assertEquals("GAME 5 MOVE 2 PLACE ROCK+PADDY AT 2 -1 -1 1 FOUND SHANGRILA AT 3 1 -4", serverString);
+    }
+
+    @Test
+    public void testPlayerScoreMessageToServerString() {
+        PlayerScoreMessage playerScoreMessage = new PlayerScoreMessage("gameOne", "spagett", 100, "playerTwo", 95);
+
+        String serverString = ClientToServerParser.getStringFromPlayerScoreMessage(playerScoreMessage);
+
+        Assert.assertEquals("GAME gameOne OVER PLAYER spagett 100 PLAYER playerTwo 95", serverString);
     }
 
 }

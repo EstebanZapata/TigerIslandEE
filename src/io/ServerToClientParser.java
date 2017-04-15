@@ -66,6 +66,11 @@ public class ServerToClientParser {
             }
 
         }
+        else if(serverInput.contains(ServerStrings.GAME_OVER)) {
+            String gameId = parts[1];
+
+            actionToTake = new GameOverMessage(gameId);
+        }
         else if (parts[0].contains("GAME") && parts[2].contains("OVER")){
             String gameIdToEnd = parts[1];
 
@@ -75,11 +80,7 @@ public class ServerToClientParser {
             actionToTake = new DisconnectMessage();
 
         }
-        else if(serverInput.contains(ServerStrings.GAME_OVER)) {
-            String gameId = parts[1];
 
-            actionToTake = new GameOverMessage(gameId);
-        }
         else {
             actionToTake = Message.NO_ACTION;
         }
