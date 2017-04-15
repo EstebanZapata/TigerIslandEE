@@ -75,6 +75,11 @@ public class ServerToClientParser {
             actionToTake = new DisconnectMessage();
 
         }
+        else if(serverInput.contains(ServerStrings.GAME_OVER)) {
+            String gameId = parts[1];
+
+            actionToTake = new GameOverMessage(gameId);
+        }
         else {
             actionToTake = Message.NO_ACTION;
         }

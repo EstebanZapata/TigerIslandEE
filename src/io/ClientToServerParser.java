@@ -6,6 +6,7 @@ import game.tile.Terrain;
 import game.tile.Tile;
 import game.tile.orientation.TileOrientation;
 import thread.message.GameActionMessage;
+import thread.message.PlayerScoreMessage;
 
 public class ClientToServerParser {
 
@@ -98,6 +99,11 @@ public class ClientToServerParser {
         }
 
         return null;
+    }
+
+    public static String getStringFromPlayerScoreMessage(PlayerScoreMessage message) {
+        return String.format("GAME %s OVER PLAYER %s %d PLAYER %s %d",
+                message.getGameId(), message.getPlayerOne(), message.getPlayerOneScore(), message.getPlayerTwo(), message.getPlayerTwoScore());
     }
 
 }

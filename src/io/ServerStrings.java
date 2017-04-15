@@ -9,4 +9,5 @@ public class ServerStrings {
     public static final String NEW_MATCH = "NEW MATCH";
     public static final String MAKE_YOUR_MOVE = "MAKE YOUR MOVE";
     public static final String THANK_YOU_FOR_PLAYING = "THANK YOU FOR PLAYING";
+    public static final String GAME_OVER = "OVER SEND OUTCOME";
 }
