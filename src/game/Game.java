@@ -50,4 +50,8 @@ public class Game {
     {
         currentlyActivePlayer.buildTigerPlayground(playgroundHex);
     }
+
+    public void buildShangrila(Player currentActivePlayer, Hex shangrilaHex) throws Exception {
+        currentActivePlayer.foundSettlementUsingShaman(shangrilaHex);
+    }
 }

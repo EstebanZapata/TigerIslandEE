@@ -52,6 +52,9 @@ public class ClientToServerParser {
             case BUILT_TIGER_PLAYGROUND:
                 buildActionString = "BUILD TIGER PLAYGROUND AT ";
                 break;
+            case SHANGRILA:
+                buildActionString = "FOUND SHANGRILA AT ";
+                break;
             case UNABLE_TO_BUILD:
                 buildActionString = "UNABLE TO BUILD";
                 break;

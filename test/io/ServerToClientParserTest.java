@@ -197,6 +197,28 @@ public class ServerToClientParserTest {
     }
 
     @Test
+    public void testFoundShangrilaActionMessage() {
+        String gameMove = "GAME 9 MOVE 7 PLAYER spagett PLACED GRASS+ROCK AT 1 0 -1 3 FOUNDED SHANGRILA AT -2 2 0";
+
+        GameActionMessage gameActionMessage = (GameActionMessage) ServerToClientParser.parseServerInputAndComposeMessage(gameMove);
+
+        Assert.assertEquals("9", gameActionMessage.getGameId());
+        Assert.assertEquals(7, gameActionMessage.getMoveNumber());
+        Assert.assertEquals("spagett", gameActionMessage.getPlayerId());
+
+        Assert.assertEquals(Terrain.ROCKY, gameActionMessage.getTilePlaced().getLeftHexRelativeToVolcano().getTerrain());
+        Assert.assertEquals(Terrain.GRASSLANDS, gameActionMessage.getTilePlaced().getRightHexRelativeToVolcano().getTerrain());
+
+        Assert.assertEquals(new Location(1,1,0), gameActionMessage.getLocationOfVolcano());
+        Assert.assertEquals(TileOrientation.SOUTHEAST_EAST, gameActionMessage.getTileOrientationPlaced());
+
+        Assert.assertEquals(BuildAction.SHANGRILA, gameActionMessage.getBuildActionPerformed());
+        Assert.assertEquals(new Location(-2,0, 0), gameActionMessage.getLocationOfBuildAction());
+
+
+    }
+
+    @Test
     public void testExpandSettlementActionMessage() {
         String gameMove = "GAME ght MOVE 8 PLAYER yoyo PLACE ROCK+LAKE AT 1 1 0 1 EXPAND SETTLEMENT AT 2 -1 2 GRASS";
 

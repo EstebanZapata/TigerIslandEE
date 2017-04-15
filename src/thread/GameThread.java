@@ -129,6 +129,8 @@ public class GameThread extends MyThread {
                 case BUILT_TOTORO_SANCTUARY:
                     game.buildTotoroSanctuary(playerMakingMove, hexBeingBuiltOn);
                     break;
+                case SHANGRILA:
+
                 case UNABLE_TO_BUILD:
                     break;
             }
